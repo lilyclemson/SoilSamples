@@ -35,11 +35,11 @@ EXPORT SoilSampling := MODULE
 
         EXPORT PATH := $.Constants.PATH_PREFIX + '::soil_sampling_format.json';
 
-        EXPORT File := DATASET(PATH, Layout, JSON('', NOROOT));
+        EXPORT rawFile := DATASET(PATH, Layout, JSON('', NOROOT), OPT);
 
-        EXPORT Normalized := NORMALIZE
+        EXPORT file := NORMALIZE
             (
-                File,
+                rawFile,
                 LEFT.soil_samples,
                 TRANSFORM
                     (
@@ -62,15 +62,15 @@ EXPORT SoilSampling := MODULE
     EXPORT Enhanced := MODULE
 
         EXPORT Layout := RECORD
-            RECORDOF(Raw.Normalized);
+            RECORDOF(Raw.file);
             BOOLEAN         hasLonLat;
             DECIMAL9_6      longitude;
             DECIMAL9_6      latitude;
         END;
 
-        EXPORT File := PROJECT
+        EXPORT file := PROJECT
             (
-                Raw.Normalized,
+                Raw.file,
                 TRANSFORM
                     (
                         Layout,

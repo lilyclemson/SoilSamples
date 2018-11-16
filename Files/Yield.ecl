@@ -36,11 +36,11 @@ EXPORT Yield := MODULE
 
         EXPORT PATH := $.Constants.PATH_PREFIX + '::yield_format.json';
 
-        EXPORT File := DATASET(PATH, Layout, JSON('', NOROOT));
+        EXPORT rawFile := DATASET(PATH, Layout, JSON('', NOROOT), OPT);
 
-        EXPORT Normalized := NORMALIZE
+        EXPORT file := NORMALIZE
             (
-                File,
+                rawFile,
                 LEFT.yield_seed_records,
                 TRANSFORM
                     (

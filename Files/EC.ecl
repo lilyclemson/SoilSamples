@@ -34,11 +34,11 @@ EXPORT EC := MODULE
 
         EXPORT PATH := $.Constants.PATH_PREFIX + '::ec_format.json';
 
-        EXPORT File := DATASET(PATH, Layout, JSON('', NOROOT));
+        EXPORT rawFile := DATASET(PATH, Layout, JSON('', NOROOT), OPT);
 
-        EXPORT Normalized := NORMALIZE
+        EXPORT file := NORMALIZE
             (
-                File,
+                rawFile,
                 LEFT.ec_data,
                 TRANSFORM
                     (
