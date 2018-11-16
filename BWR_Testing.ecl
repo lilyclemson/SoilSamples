@@ -8,7 +8,14 @@ ENDMACRO;
 
 //------------------------------------------------------------------------------
 
+x := Proagrica.Util.StringToTimestamp('2016-05-03T14:36:43.905044Z');
+
+Dbg(x, 'StringToTimestamp');
+
+//------------------------------------------------------------------------------
+
 v := Proagrica.Util.PointToLatLon('POINT (-89.079033000384811 43.255562334527198)');
 
-Dbg(v.latitude, 'latitude');
-Dbg(v.longitude, 'longitude');
+Dbg(v.isValid, 'PointToLatLon_isValid');
+Dbg(v.latitude, 'PointToLatLon_latitude');
+Dbg(v.longitude, 'PointToLatLon_longitude');

@@ -6,7 +6,9 @@ EXPORT Util := MODULE
         // Example input: 2016-05-03T14:36:43.905044Z
         date := Std.Date.FromStringToDate(timestampString[..10], '%Y-%m-%d');
         time := Std.Date.FromStringToTime(timestampString[12..], '%H:%M:%S');
-        fractionalTime := (UNSIGNED4)REGEXFIND('\\.(\\d+)Z$', timestampString, 1);
+        fractionalTimeStr1 := REGEXFIND('\\.(\\d{1,6})Z$', timestampString, 1);
+        fractionalTimeStr2 := fractionalTimeStr1 + '000000'[(LENGTH(fractionalTimeStr1) + 1)..];
+        fractionalTime := (UNSIGNED4)fractionalTimeStr2;
 
         timestamp := Std.Date.SecondsFromParts
             (
