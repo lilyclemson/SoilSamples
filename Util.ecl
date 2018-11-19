@@ -1,6 +1,11 @@
+IMPORT Proagrica;
 IMPORT Std;
 
 EXPORT Util := MODULE
+
+    EXPORT MakePath(STRING fileLeafName) := Proagrica.Files.Constants.PATH_PREFIX + '::' + fileLeafName;
+
+    //--------------------------------------------------------------------------
 
     EXPORT StringToTimestamp(STRING timestampString) := FUNCTION
         // Example input: 2016-05-03T14:36:43.905044Z
@@ -22,6 +27,8 @@ EXPORT Util := MODULE
 
         RETURN timestamp;
     END;
+
+    //--------------------------------------------------------------------------
 
     EXPORT PointToLatLon(STRING p) := FUNCTION
         // Example input:  POINT (-89.079033000384811 43.255562334527198)

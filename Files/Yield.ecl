@@ -1,4 +1,4 @@
-IMPORT $;
+IMPORT Proagrica;
 
 EXPORT Yield := MODULE
 
@@ -34,13 +34,16 @@ EXPORT Yield := MODULE
             DATASET(YieldSeedRecord)        yield_seed_records      {XPATH('YieldSeedRecords')};
         END;
 
-        EXPORT PATH := $.Constants.PATH_PREFIX + '::yield_format.json';
-
-        EXPORT rawFile := DATASET(PATH, Layout, JSON('', NOROOT), OPT);
-
-        EXPORT file := NORMALIZE
+        EXPORT RawFile(STRING pathLeafName) := DATASET
             (
-                rawFile,
+                Proagrica.Util.MakePath(pathLeafName),
+                Layout,
+                JSON('', NOROOT), OPT
+            );
+
+        EXPORT File(STRING pathLeafName) := NORMALIZE
+            (
+                RawFile(pathLeafName),
                 LEFT.yield_seed_records,
                 TRANSFORM
                     (

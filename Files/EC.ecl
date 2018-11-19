@@ -1,4 +1,4 @@
-IMPORT $;
+IMPORT Proagrica;
 
 EXPORT EC := MODULE
 
@@ -32,13 +32,16 @@ EXPORT EC := MODULE
             DATASET(ECData)                 ec_data                 {XPATH('ECData')};
         END;
 
-        EXPORT PATH := $.Constants.PATH_PREFIX + '::ec_format.json';
-
-        EXPORT rawFile := DATASET(PATH, Layout, JSON('', NOROOT), OPT);
-
-        EXPORT file := NORMALIZE
+        EXPORT RawFile(STRING pathLeafName) := DATASET
             (
-                rawFile,
+                Proagrica.Util.MakePath(pathLeafName),
+                Layout,
+                JSON('', NOROOT), OPT
+            );
+
+        EXPORT File(STRING pathLeafName) := NORMALIZE
+            (
+                RawFile(pathLeafName),
                 LEFT.ec_data,
                 TRANSFORM
                     (
