@@ -54,17 +54,17 @@ EXPORT SoilSampling := MODULE
             DATASET(SoilSamplingData)       soil_samples            {XPATH('SoilSamplingRecords')};
         END;
 
-        EXPORT RawFile(STRING pathLeafName) := DATASET
+        EXPORT RawFile(STRING path) := DATASET
             (
-                Proagrica.Util.MakePath(pathLeafName),
+                path,
                 Layout,
                 JSON('', NOROOT),
                 OPT
             );
 
-        EXPORT File(STRING pathLeafName) := NORMALIZE
+        EXPORT File(STRING path) := NORMALIZE
             (
-                RawFile(pathLeafName),
+                RawFile(path),
                 LEFT.soil_samples,
                 TRANSFORM
                     (
@@ -93,9 +93,9 @@ EXPORT SoilSampling := MODULE
             DECIMAL12_6     y_coord;
         END;
 
-        EXPORT File(STRING pathLeafName) := PROJECT
+        EXPORT File(STRING path) := PROJECT
             (
-                Raw.File(pathLeafName),
+                Raw.File(path),
                 TRANSFORM
                     (
                         Layout,
@@ -110,5 +110,17 @@ EXPORT SoilSampling := MODULE
             );
 
     END; // Enhanced Module
+
+    //--------------------------------------------------------------------------
+
+    EXPORT Working := MODULE
+
+        EXPORT Layout := Enhanced.Layout;
+
+        EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::combined_soil_samples';
+
+        EXPORT File(STRING path = DEFAULT_PATH) := DATASET(path, Layout, FLAT);
+
+    END; // Working Module
 
 END;

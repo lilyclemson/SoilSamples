@@ -1,4 +1,5 @@
 IMPORT Proagrica;
+IMPORT Std;
 
 #WORKUNIT('name', 'Proagrica: File Read Testing');
 
@@ -10,7 +11,11 @@ ENDMACRO;
 
 // SOIL_FILENAME := 'soil_sampling_format.json';
 // SOIL_FILENAME := 'soil_sampling_generated_02.json';
-SOIL_FILENAME := 'soil_sampling_generated_03.json';
+// SOIL_FILENAME := 'soil_sampling_generated_03.json';
+
+soilSampleFilePattern := Proagrica.Files.Constants.PATH_PREFIX_SCOPE + '::soil_samples_01::*';
+soilSampleFileList := NOTHOR(Std.File.LogicalFileList(soilSampleFilePattern));
+SOIL_FILENAME := '~{' + Std.Str.CombineWords(SET(soilSampleFileList, name), ',') + '}';
 
 // soilSampleRawData := Proagrica.Files.SoilSampling.Raw.RawFile(SOIL_FILENAME);
 // Dbg(soilSampleRawData);
@@ -25,7 +30,7 @@ Dbg(COUNT(enhancedSoilSampleRawData), 'enhancedSoilSampleRawData_cnt');
 
 //------------------------------------------------------------------------------
 
-EC_FILENAME := 'ec_format.json';
+EC_FILENAME := Proagrica.Util.MakePath('ec_format.json');
 
 // ecSampleRawData := Proagrica.Files.EC.Raw.RawFile(EC_FILENAME);
 // Dbg(ecSampleRawData);
@@ -35,7 +40,7 @@ Dbg(normalizedECSampleRawData);
 
 //------------------------------------------------------------------------------
 
-YIELD_FILENAME := 'yield_format.json';
+YIELD_FILENAME := Proagrica.Util.MakePath('yield_format.json');
 
 // yieldSampleRawData := Proagrica.Files.Yield.Raw.RawFile(YIELD_FILENAME);
 // Dbg(yieldSampleRawData);

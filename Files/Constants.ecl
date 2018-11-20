@@ -1,5 +1,6 @@
 EXPORT Constants := MODULE
 
-    EXPORT PATH_PREFIX := '~proagrica';
+    EXPORT PATH_PREFIX_SCOPE := 'proagrica';
+    EXPORT PATH_PREFIX := '~' + PATH_PREFIX_SCOPE;
 
 END;
