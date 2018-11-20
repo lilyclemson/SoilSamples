@@ -4,18 +4,32 @@ EXPORT SoilSampling := MODULE
 
     EXPORT Raw := MODULE
 
-        SHARED Measurement := RECORD
-            DECIMAL6_2                      measure                 {XPATH('Measure/Value')};
+        SHARED UnitIDRec := RECORD
             UNSIGNED2                       unit_id                 {XPATH('UnitID/Value')};
             UNSIGNED2                       unit_agx_att_id         {XPATH('UnitID/AgXAttID')};
         END;
 
+        SHARED Measurement := RECORD
+            DECIMAL6_2                      measure                 {XPATH('Measure/Value')};
+            UnitIDRec;
+        END;
+
+        SHARED DepthRec := RECORD
+            DECIMAL6_2                      measure                 {XPATH('Depth/Value')};
+            UnitIDRec;
+        END;
+
+        SHARED PValueRec := RECORD
+            DECIMAL6_2                      extraction_method_id    {XPATH('ExtractionMethodID/Value')};
+            Measurement                     observed_p              {XPATH('ObservedP')};
+        END;
+
         SHARED SoilSamplingData := RECORD
             STRING                          xy                      {XPATH('XY')};
-            UDECIMAL4_2                     depth                   {XPATH('SoilSamplingData/TopsoilSamplingDepth/Depth/Value')};
+            DepthRec                        depth                   {XPATH('SoilSamplingData/TopsoilSamplingDepth')};
             DECIMAL6_2                      soil_ph                 {XPATH('SoilSamplingData/Soil_pH/Value')};
             DECIMAL6_2                      buffer_ph               {XPATH('SoilSamplingData/Buffer_pH/Value')};
-            DATASET(Measurement)            p_values                {XPATH('SoilSamplingData/P/ObservedP')};
+            DATASET(PValueRec)              p_values                {XPATH('SoilSamplingData/P')};
             Measurement                     k                       {XPATH('SoilSamplingData/K')};
             Measurement                     no3                     {XPATH('SoilSamplingData/NO3_N')};
             Measurement                     ca                      {XPATH('SoilSamplingData/Ca')};
