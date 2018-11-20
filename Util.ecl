@@ -45,4 +45,21 @@ EXPORT Util := MODULE
         RETURN result;
     END;
 
+    //--------------------------------------------------------------------------
+
+    EXPORT PointToUTM(STRING p) := FUNCTION
+        // Example input:  POINT (-89.079033000384811 43.255562334527198)
+        parsedInput := REGEXREPLACE('POINT *?\\((.+?)\\)', p, '$1', NOCASE);
+        foundValues := REGEXFINDSET('-?\\d+(\\.\\d+)?', parsedInput);
+        foundValid := COUNT(foundValues) = 2;
+
+        result := MODULE
+            EXPORT BOOLEAN      isValid := foundValid;
+            EXPORT DECIMAL12_6  x := IF(foundValid, (DECIMAL12_6)foundValues[1], 0);
+            EXPORT DECIMAL12_6  y := IF(foundValid, (DECIMAL12_6)foundValues[2], 0);
+        END;
+
+        RETURN result;
+    END;
+
 END;

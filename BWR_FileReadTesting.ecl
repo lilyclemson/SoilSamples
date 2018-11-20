@@ -9,7 +9,8 @@ ENDMACRO;
 //------------------------------------------------------------------------------
 
 // SOIL_FILENAME := 'soil_sampling_format.json';
-SOIL_FILENAME := 'soil_sampling_generated_02.json';
+// SOIL_FILENAME := 'soil_sampling_generated_02.json';
+SOIL_FILENAME := 'soil_sampling_generated_03.json';
 
 // soilSampleRawData := Proagrica.Files.SoilSampling.Raw.RawFile(SOIL_FILENAME);
 // Dbg(soilSampleRawData);
