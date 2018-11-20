@@ -55,8 +55,8 @@ EXPORT Util := MODULE
 
         result := MODULE
             EXPORT BOOLEAN      isValid := foundValid;
-            EXPORT DECIMAL12_6  x := IF(foundValid, (DECIMAL12_6)foundValues[1], 0);
-            EXPORT DECIMAL12_6  y := IF(foundValid, (DECIMAL12_6)foundValues[2], 0);
+            EXPORT DECIMAL14_6  x := IF(foundValid, (DECIMAL14_6)foundValues[1], 0);
+            EXPORT DECIMAL14_6  y := IF(foundValid, (DECIMAL14_6)foundValues[2], 0);
         END;
 
         RETURN result;

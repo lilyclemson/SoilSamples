@@ -30,6 +30,14 @@ Dbg(COUNT(enhancedSoilSampleRawData), 'enhancedSoilSampleRawData_cnt');
 
 //------------------------------------------------------------------------------
 
+GENERATED_SOIL_FILENAME := Proagrica.Files.SoilSampling.Working.DEFAULT_PATH;
+
+etlSoilSampleData := Proagrica.Files.SoilSampling.Working.File(GENERATED_SOIL_FILENAME);
+Dbg(etlSoilSampleData);
+Dbg(COUNT(etlSoilSampleData), 'etlSoilSampleData_cnt');
+
+//------------------------------------------------------------------------------
+
 EC_FILENAME := Proagrica.Util.MakePath('ec_format.json');
 
 // ecSampleRawData := Proagrica.Files.EC.Raw.RawFile(EC_FILENAME);

@@ -89,8 +89,8 @@ EXPORT SoilSampling := MODULE
         EXPORT Layout := RECORD
             RECORDOF(Raw.File(''));
             BOOLEAN         has_x_y;
-            DECIMAL12_6     x_coord;
-            DECIMAL12_6     y_coord;
+            DECIMAL14_6     x_coord;
+            DECIMAL14_6     y_coord;
         END;
 
         EXPORT File(STRING path) := PROJECT
@@ -117,7 +117,7 @@ EXPORT SoilSampling := MODULE
 
         EXPORT Layout := Enhanced.Layout;
 
-        EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::combined_soil_samples';
+        EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::generated_soil_samples';
 
         EXPORT File(STRING path = DEFAULT_PATH) := DATASET(path, Layout, FLAT);
 
