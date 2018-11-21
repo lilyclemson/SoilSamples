@@ -89,8 +89,8 @@ EXPORT SoilSampling := MODULE
         EXPORT Layout := RECORD
             RECORDOF(Raw.File(''));
             BOOLEAN         has_x_y;
-            DECIMAL14_6     x_coord;
-            DECIMAL14_6     y_coord;
+            DECIMAL14_6     utm_x;
+            DECIMAL14_6     utm_y;
         END;
 
         EXPORT File(STRING path) := PROJECT
@@ -103,8 +103,8 @@ EXPORT SoilSampling := MODULE
                         coordinates := Proagrica.Util.PointToUTM(LEFT.xy);
 
                         SELF.has_x_y := coordinates.isValid,
-                        SELF.x_coord := coordinates.x,
-                        SELF.y_coord := coordinates.y,
+                        SELF.utm_x := coordinates.x,
+                        SELF.utm_y := coordinates.y,
                         SELF := LEFT
                     )
             );

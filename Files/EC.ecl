@@ -60,4 +60,53 @@ EXPORT EC := MODULE
 
     END; // Raw Module
 
+    //--------------------------------------------------------------------------
+
+    EXPORT Enhanced := MODULE
+
+        EXPORT Layout := RECORD
+            RECORDOF(Raw.File(''));
+            DECIMAL14_6     utm_x;
+            DECIMAL14_6     utm_y;
+            UNSIGNED1       utm_zone;
+        END;
+
+        EXPORT File(STRING path) := FUNCTION
+            ds := Raw.File(path);
+
+            initialZones := TABLE
+                (
+                    ds,
+                    {
+                        field_id,
+                        UNSIGNED1   zone := Proagrica.UTM.LongitudeToZone(MIN(GROUP, longitude))
+                    },
+                    field_id,
+                    MERGE
+                );
+            
+            newDS := JOIN
+                (
+                    ds,
+                    initialZones,
+                    LEFT.field_id = RIGHT.field_id,
+                    TRANSFORM
+                        (
+                            Layout,
+
+                            utmInfo := Proagrica.UTM.GPSToUTM(LEFT.latitude, LEFT.longitude, RIGHT.zone);
+
+                            SELF.utm_x := utmInfo.x,
+                            SELF.utm_y := utmInfo.y,
+                            SELF.utm_zone := utmInfo.zone,
+                            SELF := LEFT
+                        ),
+                    LOOKUP
+                );
+            
+            RETURN newDS;
+        END;
+
+    END; // Enhanced Module
+
 END;

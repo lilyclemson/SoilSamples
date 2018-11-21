@@ -46,6 +46,9 @@ EC_FILENAME := Proagrica.Util.MakePath('ec_format.json');
 normalizedECSampleRawData := Proagrica.Files.EC.Raw.File(EC_FILENAME);
 Dbg(normalizedECSampleRawData);
 
+enhancedECSampleRawData := Proagrica.Files.EC.Enhanced.File(EC_FILENAME);
+Dbg(enhancedECSampleRawData);
+
 //------------------------------------------------------------------------------
 
 YIELD_FILENAME := Proagrica.Util.MakePath('yield_format.json');
@@ -56,3 +59,6 @@ YIELD_FILENAME := Proagrica.Util.MakePath('yield_format.json');
 normalizedYieldSampleRawData := Proagrica.Files.Yield.Raw.File(YIELD_FILENAME);
 Dbg(normalizedYieldSampleRawData);
 Dbg(COUNT(normalizedYieldSampleRawData), 'normalizedYieldSampleRawData_cnt');
+
+enhancedYieldSampleRawData := Proagrica.Files.Yield.Enhanced.File(YIELD_FILENAME);
+Dbg(enhancedYieldSampleRawData);

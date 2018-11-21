@@ -8,5 +8,8 @@ ENDMACRO;
 
 //------------------------------------------------------------------------------
 
-res := Proagrica.GPSToUTM(37.762210, -99.86094);
-Dbg(res);
+utmInfo := Proagrica.UTM.GPSToUTM(37.762210, -99.86094);
+
+Dbg(utmInfo.x, 'x');
+Dbg(utmInfo.y, 'y');
+Dbg(utmInfo.zone, 'zone');
