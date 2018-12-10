@@ -42,7 +42,7 @@ EXPORT EC := MODULE
 
         EXPORT File(STRING path) := NORMALIZE
             (
-                RawFile(path),
+                DISTRIBUTE(RawFile(path), HASH32(field_id)),
                 LEFT.ec_data,
                 TRANSFORM
                     (
@@ -82,7 +82,7 @@ EXPORT EC := MODULE
                         UNSIGNED1   zone := Proagrica.UTM.LongitudeToZone(MIN(GROUP, longitude))
                     },
                     field_id,
-                    MERGE
+                    LOCAL
                 );
             
             newDS := JOIN
@@ -108,5 +108,17 @@ EXPORT EC := MODULE
         END;
 
     END; // Enhanced Module
+
+    //--------------------------------------------------------------------------
+
+    EXPORT Working := MODULE
+
+        EXPORT Layout := Enhanced.Layout;
+
+        EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::ec';
+
+        EXPORT File(STRING path = DEFAULT_PATH) := DATASET(path, Layout, FLAT);
+
+    END; // Working Module
 
 END;

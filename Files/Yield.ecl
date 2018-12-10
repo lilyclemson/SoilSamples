@@ -25,7 +25,7 @@ EXPORT Yield := MODULE
             DECIMAL6_2                      distance                {XPATH('YieldData/Distance')};
             DECIMAL6_2                      heading_value           {XPATH('YieldData/Heading')};
             DECIMAL6_2                      speed                   {XPATH('YieldData/Speed/Value')};
-            SectionRec                      section                 {XPATH('YieldData/Section')};
+            DATASET(SectionRec)             section                 {XPATH('YieldData/Section')};
         END;
 
         EXPORT Layout := RECORD
@@ -44,7 +44,7 @@ EXPORT Yield := MODULE
 
         EXPORT File(STRING path) := NORMALIZE
             (
-                RawFile(path),
+                DISTRIBUTE(RawFile(path), HASH32(field_id)),
                 LEFT.yield_seed_records,
                 TRANSFORM
                     (
@@ -84,7 +84,7 @@ EXPORT Yield := MODULE
                         UNSIGNED1   zone := Proagrica.UTM.LongitudeToZone(MIN(GROUP, longitude))
                     },
                     field_id,
-                    MERGE
+                    LOCAL
                 );
             
             newDS := JOIN
@@ -110,5 +110,17 @@ EXPORT Yield := MODULE
         END;
 
     END; // Enhanced Module
+
+    //--------------------------------------------------------------------------
+
+    EXPORT Working := MODULE
+
+        EXPORT Layout := Enhanced.Layout;
+
+        EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::yield';
+
+        EXPORT File(STRING path = DEFAULT_PATH) := DATASET(path, Layout, FLAT);
+
+    END; // Working Module
 
 END;

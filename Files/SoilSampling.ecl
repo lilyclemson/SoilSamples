@@ -25,7 +25,7 @@ EXPORT SoilSampling := MODULE
         END;
 
         SHARED SoilSamplingData := RECORD
-            STRING                          xy                      {XPATH('XY')};
+            STRING                          wkt                     {XPATH('WKT')};
             DepthRec                        depth                   {XPATH('SoilSamplingData/TopsoilSamplingDepth')};
             DECIMAL6_2                      soil_ph                 {XPATH('SoilSamplingData/Soil_pH/Value')};
             DECIMAL6_2                      buffer_ph               {XPATH('SoilSamplingData/Buffer_pH/Value')};
@@ -64,7 +64,7 @@ EXPORT SoilSampling := MODULE
 
         EXPORT File(STRING path) := NORMALIZE
             (
-                RawFile(path),
+                DISTRIBUTE(RawFile(path), HASH32(field_id)),
                 LEFT.soil_samples,
                 TRANSFORM
                     (
@@ -88,26 +88,72 @@ EXPORT SoilSampling := MODULE
 
         EXPORT Layout := RECORD
             RECORDOF(Raw.File(''));
-            BOOLEAN         has_x_y;
+            BOOLEAN         has_lat_lon;
+            DECIMAL9_6      latitude;
+            DECIMAL9_6      longitude;
             DECIMAL14_6     utm_x;
             DECIMAL14_6     utm_y;
+            UNSIGNED1       utm_zone;
         END;
 
-        EXPORT File(STRING path) := PROJECT
-            (
-                Raw.File(path),
-                TRANSFORM
-                    (
-                        Layout,
+        EXPORT File(STRING path) := FUNCTION
+            ds := Raw.File(path);
 
-                        coordinates := Proagrica.Util.PointToUTM(LEFT.xy);
+            LatLonLayout := RECORD
+                RECORDOF(Raw.File(''));
+                BOOLEAN         has_lat_lon;
+                DECIMAL9_6      latitude;
+                DECIMAL9_6      longitude;
+            END;
 
-                        SELF.has_x_y := coordinates.isValid,
-                        SELF.utm_x := coordinates.x,
-                        SELF.utm_y := coordinates.y,
-                        SELF := LEFT
-                    )
-            );
+            withLatLon := PROJECT
+                (
+                    ds,
+                    TRANSFORM
+                        (
+                            LatLonLayout,
+
+                            coordinates := Proagrica.Util.PointToLatLon(LEFT.wkt);
+
+                            SELF.has_lat_lon := coordinates.isValid,
+                            SELF.latitude := coordinates.latitude,
+                            SELF.longitude := coordinates.longitude,
+                            SELF := LEFT
+                        )
+                );
+
+            initialZones := TABLE
+                (
+                    withLatLon,
+                    {
+                        field_id,
+                        UNSIGNED1   zone := Proagrica.UTM.LongitudeToZone(MIN(GROUP, longitude))
+                    },
+                    field_id,
+                    LOCAL
+                );
+            
+            newDS := JOIN
+                (
+                    withLatLon,
+                    initialZones,
+                    LEFT.field_id = RIGHT.field_id,
+                    TRANSFORM
+                        (
+                            Layout,
+
+                            utmInfo := Proagrica.UTM.GPSToUTM(LEFT.latitude, LEFT.longitude, RIGHT.zone);
+
+                            SELF.utm_x := utmInfo.x,
+                            SELF.utm_y := utmInfo.y,
+                            SELF.utm_zone := utmInfo.zone,
+                            SELF := LEFT
+                        ),
+                    LOOKUP
+                );
+            
+            RETURN newDS;
+        END;
 
     END; // Enhanced Module
 
@@ -117,7 +163,7 @@ EXPORT SoilSampling := MODULE
 
         EXPORT Layout := Enhanced.Layout;
 
-        EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::generated_soil_samples';
+        EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::soil_samples';
 
         EXPORT File(STRING path = DEFAULT_PATH) := DATASET(path, Layout, FLAT);
 

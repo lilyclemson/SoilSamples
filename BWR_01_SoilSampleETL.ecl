@@ -3,10 +3,7 @@ IMPORT Std;
 
 #WORKUNIT('name', 'Proagrica: Soil Sample ETL');
 
-soilSampleFilePattern := Proagrica.Files.Constants.PATH_PREFIX_SCOPE + '::soil_samples_01::*';
-soilSampleFileList := NOTHOR(Std.File.LogicalFileList(soilSampleFilePattern));
-SOIL_FILENAME := '~{' + Std.Str.CombineWords(SET(soilSampleFileList, name), ',') + '}';
+SOIL_FILENAME := Std.File.ExternalLogicalFileName('10.0.0.13', '/var/lib/HPCCSystems/mydropzone/uploads/soil_samples_combined.json');
 
-enhancedSoilSampleRawData := Proagrica.Files.SoilSampling.Enhanced.File(SOIL_FILENAME);
-distributedSoilSample := DISTRIBUTE(enhancedSoilSampleRawData, SKEW(0.05));
-OUTPUT(distributedSoilSample, /*RecStruct*/, Proagrica.Files.SoilSampling.Working.DEFAULT_PATH, OVERWRITE, COMPRESSED);
+enhancedData := Proagrica.Files.SoilSampling.Enhanced.File(SOIL_FILENAME);
+OUTPUT(enhancedData, /*RecStruct*/, Proagrica.Files.SoilSampling.Working.DEFAULT_PATH, OVERWRITE, COMPRESSED);
