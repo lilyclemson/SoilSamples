@@ -1,7 +1,7 @@
 IMPORT Proagrica;
 IMPORT Std;
 
-#WORKUNIT('name', 'Proagrica: File Read Testing');
+#WORKUNIT('name', 'Proagrica: Raw File Read Testing');
 
 Dbg(sym, name = '') := MACRO
     OUTPUT(sym, NAMED(#IF(#TEXT(name) != '') name #ELSE #TEXT(sym) #END), NOXPATH);
