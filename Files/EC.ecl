@@ -28,6 +28,7 @@ EXPORT EC := MODULE
 
         EXPORT Layout := RECORD
             STRING                          created_on_datetime     {XPATH('CreatedOn')};
+            STRING                          id                      {XPATH('ID')};
             STRING                          field_id                {XPATH('FieldID')};
             DATASET(ECData)                 ec_data                 {XPATH('ECData')};
         END;
@@ -48,6 +49,7 @@ EXPORT EC := MODULE
                     (
                         {
                             Layout.created_on_datetime,
+                            Layout.id,
                             Layout.field_id,
                             UNSIGNED4   sample_id,
                             ECData

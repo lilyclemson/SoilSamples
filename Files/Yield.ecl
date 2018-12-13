@@ -36,6 +36,7 @@ EXPORT Yield := MODULE
 
         EXPORT Layout := RECORD
             STRING                          created_on_datetime     {XPATH('CreatedOn')};
+            STRING                          id                      {XPATH('ID')};
             STRING                          field_id                {XPATH('FieldID')};
             DATASET(YieldSeedRecord)        yield_seed_records      {XPATH('YieldSeedRecords')};
         END;
@@ -56,6 +57,7 @@ EXPORT Yield := MODULE
                     (
                         {
                             Layout.created_on_datetime,
+                            Layout.id,
                             Layout.field_id,
                             UNSIGNED4   sample_id,
                             YieldSeedRecord

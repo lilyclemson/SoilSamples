@@ -50,6 +50,7 @@ EXPORT SoilSampling := MODULE
 
         EXPORT Layout := RECORD
             STRING                          created_on_datetime     {XPATH('CreatedOn')};
+            STRING                          id                      {XPATH('ID')};
             STRING                          field_id                {XPATH('FieldID')};
             DATASET(SoilSamplingData)       soil_samples            {XPATH('SoilSamplingRecords')};
         END;
@@ -70,6 +71,7 @@ EXPORT SoilSampling := MODULE
                     (
                         {
                             Layout.created_on_datetime,
+                            Layout.id,
                             Layout.field_id,
                             UNSIGNED4   sample_id;
                             SoilSamplingData
