@@ -4,10 +4,16 @@ EXPORT Yield := MODULE
 
     EXPORT Raw := MODULE
 
+        SHARED SpatialRec := RECORD
+            DECIMAL6_2                      adjusted_mass           {XPATH('AdjustedMass')};
+            DECIMAL6_2                      area                    {XPATH('Area')};
+        END;
+
         SHARED SectionRec := RECORD
             BOOLEAN                         is_active               {XPATH('IsActive')};
             DECIMAL6_2                      width_value             {XPATH('SectionWidth')};
             DECIMAL6_2                      observed_mass           {XPATH('ObservedMass')};
+            DATASET(SpatialRec)             spatial                 {XPATH('SpatialRecord')}
         END;
 
         SHARED Measurement := RECORD
@@ -51,7 +57,7 @@ EXPORT Yield := MODULE
                         {
                             Layout.created_on_datetime,
                             Layout.field_id,
-                            UNSIGNED4   sample_id;
+                            UNSIGNED4   sample_id,
                             YieldSeedRecord
                         },
                         SELF.sample_id := COUNTER,
