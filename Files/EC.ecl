@@ -49,7 +49,7 @@ EXPORT EC := MODULE
                         {
                             Layout.created_on_datetime,
                             Layout.field_id,
-                            UNSIGNED4   sample_id;
+                            UNSIGNED4   sample_id,
                             ECData
                         },
                         SELF.sample_id := COUNTER,
