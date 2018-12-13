@@ -1,6 +1,7 @@
 IMPORT Proagrica;
+IMPORT Std;
 
-#WORKUNIT('name', 'Proagrica: Testing');
+#WORKUNIT('name', 'Proagrica: File Read Testing');
 
 Dbg(sym, name = '') := MACRO
     OUTPUT(sym, NAMED(#IF(#TEXT(name) != '') name #ELSE #TEXT(sym) #END), NOXPATH);
@@ -8,8 +9,9 @@ ENDMACRO;
 
 //------------------------------------------------------------------------------
 
-utmInfo := Proagrica.UTM.GPSToUTM(37.762210, -99.86094);
+soilSampleFilePattern := Proagrica.Files.Constants.PATH_PREFIX_SCOPE + '::soil_samples::*';
+soilSampleFileList := NOTHOR(Std.File.LogicalFileList(soilSampleFilePattern));
+SOIL_FILENAME := '~{' + Std.Str.CombineWords(SET(soilSampleFileList, name), ',') + '}';
 
-Dbg(utmInfo.x, 'x');
-Dbg(utmInfo.y, 'y');
-Dbg(utmInfo.zone, 'zone');
+enhancedSoilSampleRawData := Proagrica.Files.SoilSampling.Enhanced.File(SOIL_FILENAME);
+Dbg(enhancedSoilSampleRawData);
