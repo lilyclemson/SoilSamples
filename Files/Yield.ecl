@@ -124,7 +124,7 @@ EXPORT Yield := MODULE
                 File2(path),
                 TRANSFORM
                     (
-                        Layout,
+                        Layout3,
                         SELF.adjusted_mass := SUM(LEFT.spatial, adjusted_mass),
                         SELF.area := SUM(LEFT.spatial, area),
                         SELF := LEFT
