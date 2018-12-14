@@ -48,39 +48,70 @@ EXPORT SoilSampling := MODULE
             Measurement                     stone                   {XPATH('SoilSamplingData/SoilTexture/Stone')};
         END;
 
-        EXPORT Layout := RECORD
+        SHARED RawLayout := RECORD
             STRING                          created_on_datetime     {XPATH('CreatedOn')};
             STRING                          id                      {XPATH('ID')};
             STRING                          field_id                {XPATH('FieldID')};
             DATASET(SoilSamplingData)       soil_samples            {XPATH('SoilSamplingRecords')};
         END;
 
-        EXPORT RawFile(STRING path) := DATASET
+        SHARED RawFile(STRING path) := DATASET
             (
                 path,
-                Layout,
+                RawLayout,
                 JSON('', NOROOT),
                 OPT
             );
+        
+        //------------------------------------
 
-        EXPORT File(STRING path) := NORMALIZE
+        // First normalization
+        SHARED Layout1 := RECORD
+            RawLayout.created_on_datetime;
+            RawLayout.id;
+            RawLayout.field_id;
+            UNSIGNED4   sample_id;
+            SoilSamplingData;
+        END;
+
+        SHARED File1(STRING path) := NORMALIZE
             (
                 DISTRIBUTE(RawFile(path), HASH32(field_id)),
                 LEFT.soil_samples,
                 TRANSFORM
                     (
-                        {
-                            Layout.created_on_datetime,
-                            Layout.id,
-                            Layout.field_id,
-                            UNSIGNED4   sample_id;
-                            SoilSamplingData
-                        },
+                        Layout1,
                         SELF.sample_id := COUNTER,
                         SELF := LEFT,
                         SELF := RIGHT
                     )
             );
+        
+        //---------------
+
+        // Second normalization
+        SHARED Layout2 := RECORD
+            {Layout1 - [p_values]};
+            PValueRec       p_value;
+        END;
+
+        SHARED File2(STRING path) := NORMALIZE
+            (
+                File1(path),
+                LEFT.p_values,
+                TRANSFORM
+                    (
+                        Layout2,
+                        SELF.p_value := RIGHT,
+                        SELF := LEFT
+                    )
+            );
+        
+        //--------------------
+        
+        EXPORT Layout := Layout2;
+
+        EXPORT File(STRING path) := File2(path);
 
     END; // Raw Module
 
