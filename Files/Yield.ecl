@@ -99,7 +99,7 @@ EXPORT Yield := MODULE
             );
         
         // Third normalization
-        EXPORT Layout := RECORD
+        SHARED Layout3 := RECORD
             Layout2.created_on_datetime;
             Layout2.id;
             Layout2.field_id;
@@ -119,7 +119,7 @@ EXPORT Yield := MODULE
             SpatialRec;
         END;
         
-        EXPORT File(STRING path) := PROJECT
+        SHARED File3(STRING path) := PROJECT
             (
                 File2(path),
                 TRANSFORM
@@ -131,6 +131,9 @@ EXPORT Yield := MODULE
                     )
             );
 
+        EXPORT Layout := Layout3;
+
+        EXPORT File(STRING path) := File3(path);
 
     END; // Raw Module
 
