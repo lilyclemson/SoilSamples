@@ -33,6 +33,8 @@ EXPORT Yield := MODULE
             STRING                          created_on_datetime     {XPATH('CreatedOn')};
             STRING                          id                      {XPATH('ID')};
             STRING                          field_id                {XPATH('FieldID')};
+            UNSIGNED2                       crop_id                 {XPATH('CropID/Value')};
+            UNSIGNED2                       season_id               {XPATH('SeasonID/Value')};
             DATASET(YieldSeedRecord)        yield_seed_records      {XPATH('YieldSeedRecords')};
         END;
 
@@ -51,6 +53,8 @@ EXPORT Yield := MODULE
             RawLayout.created_on_datetime;
             RawLayout.id;
             RawLayout.field_id;
+            RawLayout.crop_id;
+            RawLayout.season_id;
             UNSIGNED4           sample_id;
             YieldSeedRecord;
         END;
@@ -73,6 +77,8 @@ EXPORT Yield := MODULE
             Layout1.created_on_datetime;
             Layout1.id;
             Layout1.field_id;
+            Layout1.crop_id;
+            Layout1.season_id;
             Layout1.sample_id;
             Layout1.observed_moisture;
             Layout1.adjusted_moisture;
@@ -103,6 +109,8 @@ EXPORT Yield := MODULE
             Layout2.created_on_datetime;
             Layout2.id;
             Layout2.field_id;
+            Layout2.crop_id;
+            Layout2.season_id;
             Layout2.sample_id;
             Layout2.observed_moisture;
             Layout2.adjusted_moisture;
