@@ -55,11 +55,11 @@ EXPORT SoilSampling := MODULE
             DATASET(SoilSamplingData)       soil_samples            {XPATH('SoilSamplingRecords')};
         END;
 
-        SHARED RawFile(STRING path) := DATASET
+        EXPORT RawFile(STRING path) := DATASET
             (
                 path,
                 RawLayout,
-                JSON('', NOROOT),
+                JSON, // JSON('', NOROOT),
                 OPT
             );
         

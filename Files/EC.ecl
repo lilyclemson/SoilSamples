@@ -26,7 +26,7 @@ EXPORT EC := MODULE
             Measurement                     ced                     {XPATH('CEC')};
         END;
 
-        EXPORT Layout := RECORD
+        SHARED RawLayout := RECORD
             STRING                          created_on_datetime     {XPATH('CreatedOn')};
             STRING                          id                      {XPATH('ID')};
             STRING                          field_id                {XPATH('FieldID')};
@@ -36,10 +36,18 @@ EXPORT EC := MODULE
         EXPORT RawFile(STRING path) := DATASET
             (
                 path,
-                Layout,
+                RawLayout,
                 JSON('', NOROOT),
                 OPT
             );
+
+        EXPORT Layout := RECORD
+            RawLayout.created_on_datetime,
+            RawLayout.id,
+            RawLayout.field_id,
+            UNSIGNED4   sample_id,
+            ECData
+        END;
 
         EXPORT File(STRING path) := NORMALIZE
             (
@@ -47,13 +55,7 @@ EXPORT EC := MODULE
                 LEFT.ec_data,
                 TRANSFORM
                     (
-                        {
-                            Layout.created_on_datetime,
-                            Layout.id,
-                            Layout.field_id,
-                            UNSIGNED4   sample_id,
-                            ECData
-                        },
+                        Layout,
                         SELF.sample_id := COUNTER,
                         SELF := LEFT,
                         SELF := RIGHT
