@@ -76,18 +76,24 @@ EXPORT SoilSampling := MODULE
             SoilSamplingData;
         END;
 
-        SHARED File1(STRING path) := NORMALIZE
-            (
-                DISTRIBUTE(RawFile(path), HASH32(field_id)),
-                LEFT.soil_samples,
-                TRANSFORM
-                    (
-                        Layout1,
-                        SELF.sample_id := COUNTER,
-                        SELF := LEFT,
-                        SELF := RIGHT
-                    )
-            );
+        SHARED File1(STRING path) := FUNCTION
+            cachePath := Proagrica.Files.Constants.PATH_PREFIX + '::cache::soil_samples_spray';
+            baseData := DISTRIBUTE(RawFile(path), HASH32(field_id)) : PERSIST(cachePath, SINGLE);
+            ds := NORMALIZE
+                (
+                    baseData,
+                    LEFT.soil_samples,
+                    TRANSFORM
+                        (
+                            Layout1,
+                            SELF.sample_id := COUNTER,
+                            SELF := LEFT,
+                            SELF := RIGHT
+                        )
+                );
+            
+            RETURN ds;
+        END;
         
         //---------------
 

@@ -51,18 +51,24 @@ EXPORT EC := MODULE
             ECData
         END;
 
-        EXPORT File(STRING path) := NORMALIZE
-            (
-                DISTRIBUTE(RawFile(path), HASH32(field_id)),
-                LEFT.ec_data,
-                TRANSFORM
-                    (
-                        Layout,
-                        SELF.sample_id := COUNTER,
-                        SELF := LEFT,
-                        SELF := RIGHT
-                    )
-            );
+        EXPORT File(STRING path) := FUNCTION
+            cachePath := Proagrica.Files.Constants.PATH_PREFIX + '::cache::ec_spray';
+            baseData := DISTRIBUTE(RawFile(path), HASH32(field_id)) : PERSIST(cachePath, SINGLE);
+            ds := NORMALIZE
+                (
+                    baseData,
+                    LEFT.ec_data,
+                    TRANSFORM
+                        (
+                            Layout,
+                            SELF.sample_id := COUNTER,
+                            SELF := LEFT,
+                            SELF := RIGHT
+                        )
+                );
+            
+            RETURN ds;
+        END;
 
     END; // Raw Module
 
