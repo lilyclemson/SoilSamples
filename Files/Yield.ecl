@@ -138,10 +138,65 @@ EXPORT Yield := MODULE
                         SELF := LEFT
                     )
             );
+        
+        // Append observation year and yield value, then remove duplicate
+        // samples (based on year, crop and season)
+        SHARED Layout4 := RECORD
+            Layout3;
+            INTEGER2    observation_year;
+            DECIMAL6_2  yield_value;
+        END;
 
-        EXPORT Layout := Layout3;
+        SHARED File4(STRING path) := FUNCTION
+            baseData := File3(path);
 
-        EXPORT File(STRING path) := File3(path);
+            withYearAndYield := PROJECT
+                (
+                    File3(path),
+                    TRANSFORM
+                        (
+                            Layout4,
+                            SELF.observation_year := (INTEGER2)LEFT.observation_date[..4],
+                            SELF.yield_value := LEFT.adjusted_mass / LEFT.area,
+                            SELF := LEFT
+                        )
+                );
+            
+            fieldYearSeasonCrop := TABLE
+                (
+                    withYearAndYield,
+                    {
+                        field_id,
+                        observation_year,
+                        id,
+                        season_id,
+                        crop_id,
+                        UNSIGNED4   cnt := COUNT(GROUP)
+                    },
+                    field_id, observation_year, id, season_id, crop_id,
+                    LOCAL
+                );
+            
+            sortedForGroup := SORT(fieldYearSeasonCrop, field_id, observation_year, season_id, crop_id, LOCAL);
+            groupedData := GROUP(sortedForGroup, field_id, observation_year, season_id, crop_id, LOCAL);
+            mostSamples := TOPN(groupedData, 1, -cnt);
+            ungroupedData := UNGROUP(mostSamples);
+
+            dedupedData := JOIN
+                (
+                    baseData,
+                    ungroupedData,
+                    LEFT.field_id = RIGHT.field_id AND LEFT.id = RIGHT.id,
+                    TRANSFORM(LEFT),
+                    LOCAL, KEEP(1)
+                );
+            
+            RETURN dedupedData;
+        END;
+
+        EXPORT Layout := Layout4;
+
+        EXPORT File(STRING path) := File4(path);
 
     END; // Raw Module
 
