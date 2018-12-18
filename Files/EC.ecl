@@ -30,6 +30,7 @@ EXPORT EC := MODULE
             STRING                          created_on_datetime     {XPATH('CreatedOn')};
             STRING                          id                      {XPATH('ID')};
             STRING                          field_id                {XPATH('FieldID')};
+            UNSIGNED2                       season_id               {XPATH('SeasonID/Value')};
             DATASET(ECData)                 ec_data                 {XPATH('ECData')};
         END;
 
@@ -45,6 +46,7 @@ EXPORT EC := MODULE
             RawLayout.created_on_datetime,
             RawLayout.id,
             RawLayout.field_id,
+            RawLayout.season_id;
             UNSIGNED4   sample_id,
             ECData
         END;
