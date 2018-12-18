@@ -59,24 +59,18 @@ EXPORT Yield := MODULE
             YieldSeedRecord;
         END;
 
-        SHARED File1(STRING path) := FUNCTION
-            cachePath := Proagrica.Files.Constants.PATH_PREFIX + '::cache::yield_spray';
-            baseData := DISTRIBUTE(RawFile(path), HASH32(field_id)) : PERSIST(cachePath, SINGLE);
-            ds := NORMALIZE
-                (
-                    baseData,
-                    LEFT.yield_seed_records,
-                    TRANSFORM
-                        (
-                            Layout1,
-                            SELF.sample_id := COUNTER,
-                            SELF := LEFT,
-                            SELF := RIGHT
-                        )
-                );
-            
-            RETURN ds;
-        END;
+        SHARED File1(STRING path) := NORMALIZE
+            (
+                DISTRIBUTE(RawFile(path), HASH32(field_id)),
+                LEFT.yield_seed_records,
+                TRANSFORM
+                    (
+                        Layout1,
+                        SELF.sample_id := COUNTER,
+                        SELF := LEFT,
+                        SELF := RIGHT
+                    )
+            );
 
         // Second normalization
         SHARED Layout2 := RECORD
