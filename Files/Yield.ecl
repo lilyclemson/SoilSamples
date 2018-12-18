@@ -242,7 +242,7 @@ EXPORT Yield := MODULE
 
         EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::yield';
 
-        EXPORT File(STRING path = DEFAULT_PATH) := DATASET(path, Layout, FLAT);
+        EXPORT File(STRING path = DEFAULT_PATH) := DISTRIBUTED(DATASET(path, Layout, FLAT), HASH32(field_id));
 
     END; // Working Module
 
