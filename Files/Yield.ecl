@@ -124,47 +124,30 @@ EXPORT Yield := MODULE
             Layout2.is_active;
             Layout2.width_value;
             Layout2.observed_mass;
+            INTEGER2    observation_year;
+            DECIMAL6_2  yield_value;
             SpatialRec;
         END;
         
-        SHARED File3(STRING path) := PROJECT
-            (
-                File2(path),
-                TRANSFORM
-                    (
-                        Layout3,
-                        SELF.adjusted_mass := SUM(LEFT.spatial, adjusted_mass),
-                        SELF.area := SUM(LEFT.spatial, area),
-                        SELF := LEFT
-                    )
-            );
-        
-        // Append observation year and yield value, then remove duplicate
-        // samples (based on year, crop and season)
-        SHARED Layout4 := RECORD
-            Layout3;
-            INTEGER2    observation_year;
-            DECIMAL6_2  yield_value;
-        END;
-
-        SHARED File4(STRING path) := FUNCTION
-            baseData := File3(path);
-
-            withYearAndYield := PROJECT
+        SHARED File3(STRING path) := FUNCTION
+            baseData := PROJECT
                 (
-                    File3(path),
+                    File2(path),
                     TRANSFORM
                         (
-                            Layout4,
+                            Layout3,
+                            SELF.adjusted_mass := SUM(LEFT.spatial, adjusted_mass),
+                            SELF.area := SUM(LEFT.spatial, area),
                             SELF.observation_year := (INTEGER2)LEFT.observation_date[..4],
-                            SELF.yield_value := LEFT.adjusted_mass / LEFT.area,
+                            SELF.yield_value := SELF.adjusted_mass / SELF.area,
                             SELF := LEFT
                         )
                 );
             
+            // Dataset for finding duplicate sampling runs
             fieldYearSeasonCrop := TABLE
                 (
-                    withYearAndYield,
+                    baseData,
                     {
                         field_id,
                         observation_year,
@@ -177,11 +160,13 @@ EXPORT Yield := MODULE
                     LOCAL
                 );
             
+            // Find runs with the most samples for each field/season/crop
             sortedForGroup := SORT(fieldYearSeasonCrop, field_id, observation_year, season_id, crop_id, LOCAL);
             groupedData := GROUP(sortedForGroup, field_id, observation_year, season_id, crop_id, LOCAL);
             mostSamples := TOPN(groupedData, 1, -cnt);
             ungroupedData := UNGROUP(mostSamples);
 
+            // Remove duplicates
             dedupedData := JOIN
                 (
                     baseData,
@@ -194,9 +179,9 @@ EXPORT Yield := MODULE
             RETURN dedupedData;
         END;
 
-        EXPORT Layout := Layout4;
+        EXPORT Layout := Layout3;
 
-        EXPORT File(STRING path) := File4(path);
+        EXPORT File(STRING path) := File3(path);
 
     END; // Raw Module
 
