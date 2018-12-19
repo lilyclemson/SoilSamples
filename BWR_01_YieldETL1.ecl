@@ -1,7 +1,7 @@
 IMPORT Proagrica;
 IMPORT Std;
 
-#WORKUNIT('name', 'Proagrica: Yield ETL');
+#WORKUNIT('name', 'Proagrica: Yield ETL 1');
 
 PATH := Std.File.ExternalLogicalFileName('10.0.0.13', '/var/lib/HPCCSystems/mydropzone/uploads/yield_combined.json');
 
