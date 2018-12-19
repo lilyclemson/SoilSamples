@@ -239,7 +239,7 @@ EXPORT Yield := MODULE
 
     //--------------------------------------------------------------------------
 
-    EXPORT Working := MODULE
+    EXPORT Parsed := MODULE
 
         EXPORT Layout := Enhanced.Layout;
 
@@ -247,6 +247,6 @@ EXPORT Yield := MODULE
 
         EXPORT File(STRING path = DEFAULT_PATH) := DISTRIBUTED(DATASET(path, Layout, FLAT), HASH32(field_id));
 
-    END; // Working Module
+    END; // Parsed Module
 
 END;
