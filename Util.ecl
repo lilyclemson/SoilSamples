@@ -62,4 +62,13 @@ EXPORT Util := MODULE
         RETURN result;
     END;
 
+    //--------------------------------------------------------------------------
+
+    EXPORT UTMDistance(DECIMAL14_6 x1, DECIMAL14_6 y1, DECIMAL14_6 x2, DECIMAL14_6 y2) := FUNCTION
+        x := (x1 - x2) * (x1 - x2);
+        y := (y1 - y2) * (y1 - y2);
+
+        RETURN SQRT((REAL4)x + (REAL4)y);
+    END;
+
 END;
