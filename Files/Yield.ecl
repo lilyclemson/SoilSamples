@@ -1,4 +1,5 @@
 IMPORT Proagrica;
+IMPORT Std;
 
 EXPORT Yield := MODULE
 
@@ -61,12 +62,14 @@ EXPORT Yield := MODULE
 
         SHARED File1(STRING path) := NORMALIZE
             (
-                DISTRIBUTE(RawFile(path), HASH32(field_id)),
+                DISTRIBUTE(RawFile(path), HASH32(Std.Str.ToLowerCase(field_id))),
                 LEFT.yield_seed_records,
                 TRANSFORM
                     (
                         Layout1,
                         SELF.sample_id := COUNTER,
+                        SELF.id := Std.Str.ToLowerCase(LEFT.id),
+                        SELF.field_id := Std.Str.ToLowerCase(LEFT.field_id),
                         SELF := LEFT,
                         SELF := RIGHT
                     )
