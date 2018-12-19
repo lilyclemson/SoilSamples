@@ -60,20 +60,27 @@ EXPORT Yield := MODULE
             YieldSeedRecord;
         END;
 
-        SHARED File1(STRING path) := NORMALIZE
-            (
-                DISTRIBUTE(RawFile(path), HASH32(Std.Str.ToLowerCase(field_id))),
-                LEFT.yield_seed_records,
-                TRANSFORM
-                    (
-                        Layout1,
-                        SELF.sample_id := COUNTER,
-                        SELF.id := Std.Str.ToLowerCase(LEFT.id),
-                        SELF.field_id := Std.Str.ToLowerCase(LEFT.field_id),
-                        SELF := LEFT,
-                        SELF := RIGHT
-                    )
-            );
+        SHARED File1(STRING path) := FUNCTION
+            baseData := RawFile(path);
+            filteredBaseData := baseData(Std.Str.ToLowerCase(field_id) IN Proagrica.Files.Constants.COMMON_FIELD_ID_SET);
+
+            newDS := NORMALIZE
+                (
+                    DISTRIBUTE(filteredBaseData, HASH32(Std.Str.ToLowerCase(field_id))),
+                    LEFT.yield_seed_records,
+                    TRANSFORM
+                        (
+                            Layout1,
+                            SELF.sample_id := COUNTER,
+                            SELF.id := Std.Str.ToLowerCase(LEFT.id),
+                            SELF.field_id := Std.Str.ToLowerCase(LEFT.field_id),
+                            SELF := LEFT,
+                            SELF := RIGHT
+                        )
+                );
+            
+            RETURN newDS;
+        END;
 
         // Second normalization
         SHARED Layout2 := RECORD

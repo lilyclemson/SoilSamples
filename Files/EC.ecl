@@ -52,20 +52,27 @@ EXPORT EC := MODULE
             ECData
         END;
 
-        EXPORT File(STRING path) := NORMALIZE
-            (
-                DISTRIBUTE(RawFile(path), HASH32(Std.Str.ToLowerCase(field_id))),
-                LEFT.ec_data,
-                TRANSFORM
-                    (
-                        Layout,
-                        SELF.sample_id := COUNTER,
-                        SELF.id := Std.Str.ToLowerCase(LEFT.id),
-                        SELF.field_id := Std.Str.ToLowerCase(LEFT.field_id),
-                        SELF := LEFT,
-                        SELF := RIGHT
-                    )
-            );
+        EXPORT File(STRING path) := FUNCTION
+            baseData := RawFile(path);
+            filteredBaseData := baseData(Std.Str.ToLowerCase(field_id) IN Proagrica.Files.Constants.COMMON_FIELD_ID_SET);
+
+            newDS := NORMALIZE
+                (
+                    DISTRIBUTE(filteredBaseData, HASH32(Std.Str.ToLowerCase(field_id))),
+                    LEFT.ec_data,
+                    TRANSFORM
+                        (
+                            Layout,
+                            SELF.sample_id := COUNTER,
+                            SELF.id := Std.Str.ToLowerCase(LEFT.id),
+                            SELF.field_id := Std.Str.ToLowerCase(LEFT.field_id),
+                            SELF := LEFT,
+                            SELF := RIGHT
+                        )
+                );
+            
+            RETURN newDS;
+        END;
 
     END; // Raw Module
 
