@@ -26,7 +26,8 @@ stats := TABLE
         LOCAL
     );
 
-STD_DEV_FACTOR := 2;
+STD_DEV_SPEED_FACTOR := 1;
+STD_DEV_MASS_FACTOR := 2;
 
 minMax := PROJECT
     (
@@ -37,13 +38,11 @@ minMax := PROJECT
                     RECORDOF(LEFT),
                     DECIMAL6_2          speed_min_allowed,
                     DECIMAL6_2          speed_max_allowed,
-                    DECIMAL6_2          adj_mass_min_allowed,
-                    DECIMAL6_2          adj_mass_max_allowed
+                    DECIMAL6_2          adj_mass_min_allowed
                 },
-                SELF.speed_min_allowed := MAX(LEFT.speed_mean - (STD_DEV_FACTOR * LEFT.speed_std_dev), 0),
-                SELF.speed_max_allowed := LEFT.speed_mean + (STD_DEV_FACTOR * LEFT.speed_std_dev),
-                SELF.adj_mass_min_allowed := MAX(LEFT.adj_mass_mean - (STD_DEV_FACTOR * LEFT.adj_mass_std_dev), 0),
-                SELF.adj_mass_max_allowed := LEFT.adj_mass_mean + (STD_DEV_FACTOR * LEFT.adj_mass_std_dev),
+                SELF.speed_min_allowed := MAX(LEFT.speed_mean - (STD_DEV_SPEED_FACTOR * LEFT.speed_std_dev), 0),
+                SELF.speed_max_allowed := LEFT.speed_mean + (STD_DEV_SPEED_FACTOR * LEFT.speed_std_dev),
+                SELF.adj_mass_min_allowed := MAX(LEFT.adj_mass_mean - (STD_DEV_MASS_FACTOR * LEFT.adj_mass_std_dev), 0),
                 SELF := LEFT
             )
     );
@@ -57,7 +56,7 @@ goodYieldData2 := JOIN
             AND LEFT.id = RIGHT.id
             AND LEFT.crop_id = RIGHT.crop_id
             AND LEFT.speed BETWEEN RIGHT.speed_min_allowed AND RIGHT.speed_max_allowed
-            AND LEFT.adjusted_mass BETWEEN RIGHT.adj_mass_min_allowed AND RIGHT.adj_mass_max_allowed,
+            AND LEFT.adjusted_mass >= RIGHT.adj_mass_min_allowed,
         TRANSFORM(LEFT),
         LOCAL
     );

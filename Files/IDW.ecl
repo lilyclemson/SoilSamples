@@ -7,8 +7,8 @@ EXPORT IDW := MODULE
 
     EXPORT Layout := RECORD
         UNSIGNED1       utm_zone;
-        DECIMAL14_6     utm_x;
-        DECIMAL14_6     utm_y;
+        DECIMAL14_6     soil_sample_utm_x;
+        DECIMAL14_6     soil_sample_utm_y;
         DECIMAL14_6     other_utm_x;
         DECIMAL14_6     other_utm_y;
         DECIMAL9_6      distance;

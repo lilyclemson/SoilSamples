@@ -69,7 +69,7 @@ reducedUTM := TABLE
     );
 
 WIDTH_RANGE := 24; // meters
-IDW_EXP := 1;
+IDW_EXP := 2;
 
 nearbyPoints := JOIN
     (
@@ -84,6 +84,8 @@ nearbyPoints := JOIN
 
                 dist := Proagrica.Util.UTMDistance(LEFT.utm_x, LEFT.utm_y, RIGHT.utm_x, RIGHT.utm_y);
 
+                SELF.soil_sample_utm_x := LEFT.utm_x,
+                SELF.soil_sample_utm_y := LEFT.utm_y,
                 SELF.other_utm_x := RIGHT.utm_x,
                 SELF.other_utm_y := RIGHT.utm_y,
                 SELF.distance := IF(dist <= WIDTH_RANGE, dist, SKIP),
