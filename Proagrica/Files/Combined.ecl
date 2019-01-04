@@ -85,8 +85,6 @@ EXPORT Combined := MODULE
             Measurement         stone                   {XPATH('SoilSamplingData/SoilTexture/Stone')};
             PValueRec           p_value;
             BOOLEAN             has_lat_lon;
-            DECIMAL9_6          latitude;
-            DECIMAL9_6          longitude;
             DECIMAL14_6         utm_x;
             DECIMAL14_6         utm_y;
             UNSIGNED1           utm_zone;
