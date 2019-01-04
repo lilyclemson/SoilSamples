@@ -63,7 +63,6 @@ EXPORT Combined := MODULE
             STRING              field_id                {XPATH('FieldID')};
             UNSIGNED2           season_id               {XPATH('SeasonID/Value')};
             UNSIGNED4           sample_id;
-            STRING              wkt                     {XPATH('WKT')};
             DepthRec            depth                   {XPATH('SoilSamplingData/TopsoilSamplingDepth')};
             DECIMAL6_2          soil_ph                 {XPATH('SoilSamplingData/Soil_pH/Value')};
             DECIMAL6_2          buffer_ph               {XPATH('SoilSamplingData/Buffer_pH/Value')};
@@ -84,7 +83,6 @@ EXPORT Combined := MODULE
             Measurement         clay                    {XPATH('SoilSamplingData/SoilTexture/Clay')};
             Measurement         stone                   {XPATH('SoilSamplingData/SoilTexture/Stone')};
             PValueRec           p_value;
-            BOOLEAN             has_lat_lon;
             DECIMAL14_6         utm_x;
             DECIMAL14_6         utm_y;
             UNSIGNED1           utm_zone;
