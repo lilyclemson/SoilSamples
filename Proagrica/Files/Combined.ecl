@@ -3,7 +3,7 @@ IMPORT Std;
 
 EXPORT Combined := MODULE
 
-    EXPORT Working := MODULE
+    EXPORT Temp := MODULE
 
         SHARED DepthRec := RECORD
             DECIMAL6_2          measure                 {XPATH('Depth/Value')};
@@ -88,6 +88,93 @@ EXPORT Combined := MODULE
             UNSIGNED1           utm_zone;
             ECDataWithIDW       ec;
             YieldDataWithIDW    yield;
+        END;
+
+        EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::combined_temp';
+
+        EXPORT File(STRING path = DEFAULT_PATH) := DISTRIBUTED(DATASET(path, Layout, FLAT), HASH32(field_id));
+
+    END; // Temp Module
+
+    //--------------------------------------------------------------------------
+
+    EXPORT Working := MODULE
+
+        EXPORT Layout := RECORD
+            STRING              created_on_datetime;
+            STRING              id;
+            STRING              field_id;
+            UNSIGNED2           season_id;
+            UNSIGNED4           sample_id;
+            DECIMAL6_2          depth_measure;
+            UNSIGNED2           depth_unit_id;
+            UNSIGNED2           depth_unit_agx_att_id;
+            DECIMAL6_2          soil_ph;
+            DECIMAL6_2          buffer_ph;
+            DECIMAL6_2          k_measure;
+            UNSIGNED2           k_unit_id;
+            DECIMAL6_2          no3_measure;
+            UNSIGNED2           no3_unit_id;
+            DECIMAL6_2          ca_measure;
+            UNSIGNED2           ca_unit_id;
+            DECIMAL6_2          mg_measure;
+            UNSIGNED2           mg_unit_id;
+            DECIMAL6_2          cec_measure;
+            UNSIGNED2           cec_unit_id;
+            UDECIMAL6_2         percent_k;
+            UDECIMAL6_2         percent_ca;
+            UDECIMAL6_2         percent_mg;
+            UDECIMAL6_2         percent_na;
+            DECIMAL6_2          s_measure;
+            UNSIGNED2           s_unit_id;
+            DECIMAL6_2          zn_measure;
+            UNSIGNED2           zn_unit_id;
+            DECIMAL6_2          om_measure;
+            UNSIGNED2           om_unit_id;
+            DECIMAL6_2          sand_measure;
+            UNSIGNED2           sand_unit_id;
+            DECIMAL6_2          silt_measure;
+            UNSIGNED2           silt_unit_id;
+            DECIMAL6_2          clay_measure;
+            UNSIGNED2           clay_unit_id;
+            DECIMAL6_2          stone_measure;
+            UNSIGNED2           stone_unit_id;
+            DECIMAL6_2          p_value_extraction_method_id;
+            DECIMAL6_2          p_value_observed_p_measure;
+            UNSIGNED2           p_value_observed_p_unit_id;
+            DECIMAL14_6         utm_x;
+            DECIMAL14_6         utm_y;
+            UNSIGNED1           utm_zone;
+            STRING              ec_id;
+            DECIMAL6_2          ec_elevation_measure;
+            UNSIGNED2           ec_elevation_unit_id;
+            DECIMAL6_2          ec_speed_measure;
+            UNSIGNED2           ec_speed_unit_id;
+            DECIMAL6_2          ec_red;
+            DECIMAL6_2          ec_ir;
+            DECIMAL6_2          ec_shallow_measure;
+            UNSIGNED2           ec_shallow_unit_id;
+            DECIMAL6_2          ec_deep_measure;
+            UNSIGNED2           ec_deep_unit_id;
+            DECIMAL6_2          ec_slope;
+            DECIMAL6_2          ec_curve;
+            DECIMAL6_2          ec_ec02_measure;
+            UNSIGNED2           ec_ec02_unit_id;
+            DECIMAL6_2          ec_dipole_measure;
+            UNSIGNED2           ec_dipole_unit_id;
+            DECIMAL6_2          ec_om_measure;
+            UNSIGNED2           ec_om_unit_id;
+            DECIMAL6_2          ec_ced_measure;
+            UNSIGNED2           ec_ced_unit_id;
+            STRING              yield_id;
+            UNSIGNED2           yield_crop_id;
+            UNSIGNED2           yield_season_id;
+            DECIMAL6_2          yield_adjusted_moisture;
+            STRING              yield_observation_date;
+            INTEGER2            yield_observation_year;
+            DECIMAL6_2          yield_yield_value;
+            DECIMAL6_2          yield_adjusted_mass;
+            DECIMAL6_2          yield_area;
         END;
 
         EXPORT DEFAULT_PATH := Proagrica.Files.Constants.PATH_PREFIX + '::combined';

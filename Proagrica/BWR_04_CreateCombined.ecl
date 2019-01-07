@@ -198,13 +198,83 @@ res1 := JOIN
             AND LEFT.sample_id = RIGHT.sample_id,
         TRANSFORM
             (
-                Proagrica.Files.Combined.Working.Layout,
+                Proagrica.Files.Combined.Temp.Layout,
                 SELF.ec := LEFT.ec,
                 SELF.yield := RIGHT.yield,
                 SELF := LEFT
             )
     );
 
-res2 := DISTRIBUTE(res1, HASH32(field_id));
+res2 := PROJECT
+    (
+        res1,
+        TRANSFORM
+            (
+                Proagrica.Files.Combined.Working.Layout,
+                SELF.depth_measure := LEFT.depth.measure,
+                SELF.depth_unit_id := LEFT.depth.unit_id,
+                SELF.depth_unit_agx_att_id := LEFT.depth.unit_agx_att_id,
+                SELF.k_measure := LEFT.k.measure,
+                SELF.k_unit_id := LEFT.k.unit_id,
+                SELF.no3_measure := LEFT.no3.measure,
+                SELF.no3_unit_id := LEFT.no3.unit_id,
+                SELF.ca_measure := LEFT.ca.measure,
+                SELF.ca_unit_id := LEFT.ca.unit_id,
+                SELF.mg_measure := LEFT.mg.measure,
+                SELF.mg_unit_id := LEFT.mg.unit_id,
+                SELF.cec_measure := LEFT.cec.measure,
+                SELF.cec_unit_id := LEFT.cec.unit_id,
+                SELF.s_measure := LEFT.s.measure,
+                SELF.s_unit_id := LEFT.s.unit_id,
+                SELF.zn_measure := LEFT.zn.measure,
+                SELF.zn_unit_id := LEFT.zn.unit_id,
+                SELF.om_measure := LEFT.om.measure,
+                SELF.om_unit_id := LEFT.om.unit_id,
+                SELF.sand_measure := LEFT.sand.measure,
+                SELF.sand_unit_id := LEFT.sand.unit_id,
+                SELF.silt_measure := LEFT.silt.measure,
+                SELF.silt_unit_id := LEFT.silt.unit_id,
+                SELF.clay_measure := LEFT.clay.measure,
+                SELF.clay_unit_id := LEFT.clay.unit_id,
+                SELF.stone_measure := LEFT.stone.measure,
+                SELF.stone_unit_id := LEFT.stone.unit_id,
+                SELF.p_value_extraction_method_id := LEFT.p_value.extraction_method_id,
+                SELF.p_value_observed_p_measure := LEFT.p_value.observed_p.measure,
+                SELF.p_value_observed_p_unit_id := LEFT.p_value.observed_p.unit_id,
+                SELF.ec_id := LEFT.ec.id,
+                SELF.ec_elevation_measure := LEFT.ec.elevation.measure,
+                SELF.ec_elevation_unit_id := LEFT.ec.elevation.unit_id,
+                SELF.ec_speed_measure := LEFT.ec.speed.measure,
+                SELF.ec_speed_unit_id := LEFT.ec.speed.unit_id,
+                SELF.ec_red := LEFT.ec.red,
+                SELF.ec_ir := LEFT.ec.ir,
+                SELF.ec_shallow_measure := LEFT.ec.shallow.measure,
+                SELF.ec_shallow_unit_id := LEFT.ec.shallow.unit_id,
+                SELF.ec_deep_measure := LEFT.ec.deep.measure,
+                SELF.ec_deep_unit_id := LEFT.ec.deep.unit_id,
+                SELF.ec_slope := LEFT.ec.slope,
+                SELF.ec_curve := LEFT.ec.curve,
+                SELF.ec_ec02_measure := LEFT.ec.ec02.measure,
+                SELF.ec_ec02_unit_id := LEFT.ec.ec02.unit_id,
+                SELF.ec_dipole_measure := LEFT.ec.dipole.measure,
+                SELF.ec_dipole_unit_id := LEFT.ec.dipole.unit_id,
+                SELF.ec_om_measure := LEFT.ec.om.measure,
+                SELF.ec_om_unit_id := LEFT.ec.om.unit_id,
+                SELF.ec_ced_measure := LEFT.ec.ced.measure,
+                SELF.ec_ced_unit_id := LEFT.ec.ced.unit_id,
+                SELF.yield_id := LEFT.yield.id,
+                SELF.yield_crop_id := LEFT.yield.crop_id,
+                SELF.yield_season_id := LEFT.yield.season_id,
+                SELF.yield_adjusted_moisture := LEFT.yield.adjusted_moisture,
+                SELF.yield_observation_date := LEFT.yield.observation_date,
+                SELF.yield_observation_year := LEFT.yield.observation_year,
+                SELF.yield_yield_value := LEFT.yield.yield_value,
+                SELF.yield_adjusted_mass := LEFT.yield.adjusted_mass,
+                SELF.yield_area := LEFT.yield.area,
+                SELF := LEFT
+            )
+    );
 
-OUTPUT(res2, /* ResultRec */, Proagrica.Files.Combined.Working.DEFAULT_PATH, OVERWRITE, COMPRESSED);
+res3 := DISTRIBUTE(res2, HASH32(field_id));
+
+OUTPUT(res3, /* ResultRec */, Proagrica.Files.Combined.Working.DEFAULT_PATH, OVERWRITE, COMPRESSED);
