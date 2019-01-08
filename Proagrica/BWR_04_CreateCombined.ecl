@@ -64,12 +64,12 @@ MoveSimple(area, sym) := MACRO
 ENDMACRO;
 
 NormMeasure(area, sym) := MACRO
-    SELF.area.sym.measure := LEFT.area.sym.measure * LEFT.area.idw,
+    SELF.area.sym.measure := LEFT.area.sym.measure / LEFT.area.idw,
     SELF.area.sym.unit_id := LEFT.area.sym.unit_id
 ENDMACRO;
 
 NormSimple(area, sym) := MACRO
-    SELF.area.sym := LEFT.area.sym * LEFT.area.idw
+    SELF.area.sym := LEFT.area.sym / LEFT.area.idw
 ENDMACRO;
 
 //------------------------------------------------------------------------------
