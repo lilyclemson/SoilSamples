@@ -73,24 +73,24 @@ IDW_EXP := 2;
 
 nearbyPoints := JOIN
     (
-        DISTRIBUTE(basicSoilSampleUTM, SKEW(0.05)),
         reducedUTM,
+        basicSoilSampleUTM,
         LEFT.utm_zone = RIGHT.utm_zone
-            AND RIGHT.utm_x BETWEEN (LEFT.utm_x - WIDTH_RANGE) AND (LEFT.utm_x + WIDTH_RANGE)
-            AND RIGHT.utm_y BETWEEN (LEFT.utm_y - WIDTH_RANGE) AND (LEFT.utm_y + WIDTH_RANGE),
+            AND LEFT.utm_x BETWEEN (RIGHT.utm_x - WIDTH_RANGE) AND (RIGHT.utm_x + WIDTH_RANGE)
+            AND LEFT.utm_y BETWEEN (RIGHT.utm_y - WIDTH_RANGE) AND (RIGHT.utm_y + WIDTH_RANGE),
         TRANSFORM
             (
                 Proagrica.Files.IDW.Layout,
 
                 dist := Proagrica.Util.UTMDistance(LEFT.utm_x, LEFT.utm_y, RIGHT.utm_x, RIGHT.utm_y);
 
-                SELF.soil_sample_utm_x := LEFT.utm_x,
-                SELF.soil_sample_utm_y := LEFT.utm_y,
-                SELF.other_utm_x := RIGHT.utm_x,
-                SELF.other_utm_y := RIGHT.utm_y,
+                SELF.soil_sample_utm_x := RIGHT.utm_x,
+                SELF.soil_sample_utm_y := RIGHT.utm_y,
+                SELF.other_utm_x := LEFT.utm_x,
+                SELF.other_utm_y := LEFT.utm_y,
                 SELF.distance := IF(dist <= WIDTH_RANGE, dist, SKIP),
                 SELF.idw := POWER(1.0 / (REAL4)SELF.distance, IDW_EXP),
-                SELF := LEFT
+                SELF := RIGHT
             ),
         MANY LOOKUP
     );
