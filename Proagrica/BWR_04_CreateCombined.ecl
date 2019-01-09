@@ -278,3 +278,7 @@ res2 := PROJECT
 res3 := DISTRIBUTE(res2, HASH32(field_id));
 
 OUTPUT(res3, /* ResultRec */, Proagrica.Files.Combined.Working.DEFAULT_PATH, OVERWRITE, COMPRESSED);
+
+// Also write as a .csv file
+headerText := 'created_on_datetime,id,field_id,season_id,sample_id,depth_measure,depth_unit_id,depth_unit_agx_att_id,soil_ph,buffer_ph,k_measure,k_unit_id,no3_measure,no3_unit_id,ca_measure,ca_unit_id,mg_measure,mg_unit_id,cec_measure,cec_unit_id,percent_k,percent_ca,percent_mg,percent_na,s_measure,s_unit_id,zn_measure,zn_unit_id,om_measure,om_unit_id,sand_measure,sand_unit_id,silt_measure,silt_unit_id,clay_measure,clay_unit_id,stone_measure,stone_unit_id,p_value_extraction_method_id,p_value_observed_p_measure,p_value_observed_p_unit_id,utm_x,utm_y,utm_zone,ec_id,ec_elevation_measure,ec_elevation_unit_id,ec_speed_measure,ec_speed_unit_id,ec_red,ec_ir,ec_shallow_measure,ec_shallow_unit_id,ec_deep_measure,ec_deep_unit_id,ec_slope,ec_curve,ec_ec02_measure,ec_ec02_unit_id,ec_dipole_measure,ec_dipole_unit_id,ec_om_measure,ec_om_unit_id,ec_ced_measure,ec_ced_unit_id,yield_id,yield_crop_id,yield_season_id,yield_adjusted_moisture,yield_observation_date,yield_observation_year,yield_yield_value,yield_adjusted_mass,yield_area\n';
+OUTPUT(res3, /* ResultRec */, Proagrica.Files.Combined.Working.DEFAULT_PATH + '.csv', CSV(HEADING(headerText, SINGLE)), OVERWRITE, COMPRESSED);
