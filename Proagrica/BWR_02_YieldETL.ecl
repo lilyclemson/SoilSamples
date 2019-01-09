@@ -18,9 +18,9 @@ stats := TABLE
             id,
             crop_id,
             DECIMAL6_2      speed_mean := AVE(GROUP, speed),
-            DECIMAL6_2      speed_std_dev := SQRT(VARIANCE(GROUP, speed)),
+            REAL4           speed_std_dev := SQRT(VARIANCE(GROUP, speed)),
             DECIMAL6_2      adj_mass_mean := AVE(GROUP, adjusted_mass),
-            DECIMAL6_2      adj_mass_std_dev := SQRT(VARIANCE(GROUP, adjusted_mass))
+            REAL4           adj_mass_std_dev := SQRT(VARIANCE(GROUP, adjusted_mass))
         },
         field_id, id, crop_id,
         LOCAL
