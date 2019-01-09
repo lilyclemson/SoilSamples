@@ -206,9 +206,12 @@ res1 := JOIN
     (
         ecWeight3,
         yieldWeight3,
+        LEFT.utm_x = RIGHT.utm_x
+            AND LEFT.utm_y = RIGHT.utm_y,
+        /*
         LEFT.id = RIGHT.id
             AND LEFT.field_id = RIGHT.field_id
-            AND LEFT.sample_id = RIGHT.sample_id,
+            AND LEFT.sample_id = RIGHT.sample_id, */
         TRANSFORM
             (
                 Proagrica.Files.Combined.Temp.Layout,
