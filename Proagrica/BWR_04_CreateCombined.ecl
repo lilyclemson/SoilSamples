@@ -170,7 +170,7 @@ yieldWeight1 := JOIN
 
 yieldWeight2 := ROLLUP
     (
-        SORT(yieldWeight1, utm_x, utm_y, season_id, yield.id),
+        SORT(yieldWeight1, utm_x, utm_y, yield.crop_id, season_id, yield.id),
         TRANSFORM
             (
                 RECORDOF(LEFT),
@@ -184,7 +184,7 @@ yieldWeight2 := ROLLUP
                 SELF.yield.idw := LEFT.yield.idw + RIGHT.yield.idw,
                 SELF := RIGHT
             ),
-        utm_x, utm_y, season_id, yield.id
+        utm_x, utm_y, yield.crop_id, season_id, yield.id
     );
 
 //------------------------------------------------------------------------------
