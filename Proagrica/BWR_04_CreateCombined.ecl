@@ -155,8 +155,7 @@ yieldWeight1 := JOIN
         soilSampleData,
         yieldWithIDW,
         LEFT.utm_x = RIGHT.soil_sample_utm_x
-            AND LEFT.utm_y = RIGHT.soil_sample_utm_y
-            AND LEFT.season_id = RIGHT.season_id,
+            AND LEFT.utm_y = RIGHT.soil_sample_utm_y,
         TRANSFORM
             (
                 {
@@ -187,12 +186,26 @@ yieldWeight2 := ROLLUP
         utm_x, utm_y, yield.crop_id, season_id, yield.id
     );
 
+yieldWeight3 := PROJECT
+    (
+        yieldWeight2,
+        TRANSFORM
+            (
+                RECORDOF(LEFT),
+                NormSimple(yield, adjusted_moisture),
+                NormSimple(yield, yield_value),
+                NormSimple(yield, adjusted_mass),
+                NormSimple(yield, area),
+                SELF := LEFT
+            )
+    );
+
 //------------------------------------------------------------------------------
 
 res1 := JOIN
     (
         ecWeight3,
-        yieldWeight2,
+        yieldWeight3,
         LEFT.id = RIGHT.id
             AND LEFT.field_id = RIGHT.field_id
             AND LEFT.sample_id = RIGHT.sample_id,
