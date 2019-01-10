@@ -111,7 +111,7 @@ gen_variogram(DATASET(Types.NumericField) d1,
         SELF.value01 := IF(isValue, 0,(le.value-ri.value)*(le.value-ri.value));//Distance
         SELF.value02 := IF(isValue, 0.5*(le.value-ri.value)*(le.value-ri.value), 0); //Variance
   END;
-  s1 := JOIN(d1,d2,LEFT.wi = RIGHT.wi AND LEFT.number=RIGHT.number AND LEFT.id <> RIGHT.id, Take2(LEFT,RIGHT));
+  s1 := JOIN(d1,d2,LEFT.wi = RIGHT.wi AND LEFT.number=RIGHT.number, Take2(LEFT,RIGHT));
   s2 := GROUP(s1,wi,clusterid,id,ALL);
   ClusterPair roll(ClusterPair le, DATASET(ClusterPair) gd) := TRANSFORM
     SELF.Value01 := SQRT(SUM(gd, value01));
@@ -154,6 +154,7 @@ SELF.number := 1, SELF := LEFT));
 //Now we are ready to run Linear Regression
 //lr is the trained Linear Regression model
 lr := LROLS.OLS(TrainInd,TrainDpt);
+coef := lr.GetModel();
 
 //Apply the above trained Linear Regression model to the Testset
 ML_Core.AppendSeqID(variogramTest, value03, preTest);
@@ -182,7 +183,7 @@ A := JOIN(A0, mtrain, LEFT.wi_id = RIGHT.wi_id AND LEFT.x = RIGHT.x
                       AND LEFT.y = RIGHT.y, TRANSFORM(RECORDOF(A0),
                       SELF.v := MAP(LEFT.x = ro AND LEFT.y = ro => 0,
                                     LEFT.x = ro OR LEFT.y = ro => 1,
-                                    LEFT.x = RIGHT.y =>0,
+                                    // LEFT.x = RIGHT.y =>coef(number = 1).value,//nugget
                                     RIGHT.v),
                       SELF := LEFT), LEFT OUTER);
 
